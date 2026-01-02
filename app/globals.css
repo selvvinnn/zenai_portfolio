@@ -63,16 +63,145 @@ body {
   }
 }
 
-/* Instagram Embed Styles */
+/* Instagram Embed Styles - Remove White Backgrounds and UI Elements */
 .instagram-media {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
   min-width: 100% !important;
   max-width: 100% !important;
   width: 100% !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
 }
 
 .instagram-media iframe {
+  background: transparent !important;
+  background-color: transparent !important;
   width: 100% !important;
   height: 100% !important;
-  min-height: 600px;
+  min-height: 100% !important;
+  border: none !important;
+}
+
+.instagram-media > div {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Remove all white/grey backgrounds from Instagram embed */
+.instagram-media * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Target Instagram's internal elements */
+.instagram-media iframe[src*="instagram.com"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Hide Instagram's white/grey container and UI elements */
+.instagram-media > div > div {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Hide Instagram interaction panel (likes, comments, etc.) */
+.instagram-media > div > div[style*="rgb(250, 250, 250)"],
+.instagram-media > div > div[style*="rgb(255, 255, 255)"],
+.instagram-media > div > div[style*="#fafafa"],
+.instagram-media > div > div[style*="#ffffff"],
+.instagram-media > div > div[style*="#fff"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Hide any element with white/grey background */
+.instagram-media *[style*="rgb(250, 250, 250)"],
+.instagram-media *[style*="rgb(255, 255, 255)"],
+.instagram-media *[style*="#fafafa"],
+.instagram-media *[style*="#ffffff"],
+.instagram-media *[style*="#fff"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Ensure no white backgrounds appear */
+iframe[src*="instagram.com"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Hide Instagram embed UI elements that appear after load */
+.instagram-media iframe body,
+.instagram-media iframe body * {
+  background: transparent !important;
+}
+
+/* Mobile responsiveness for Instagram embeds */
+@media (max-width: 640px) {
+  .instagram-media {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  .instagram-media iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Smooth horizontal scroll - Hide on desktop, show on mobile */
+.scrollbar-hide-desktop {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(126, 34, 206, 0.5) transparent;
+}
+
+/* Hide scrollbar on desktop/laptop */
+@media (min-width: 768px) {
+  .scrollbar-hide-desktop {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .scrollbar-hide-desktop::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+/* Show scrollbar on mobile */
+@media (max-width: 767px) {
+  .scrollbar-hide-desktop {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(126, 34, 206, 0.5) transparent;
+  }
+  
+  .scrollbar-hide-desktop::-webkit-scrollbar {
+    height: 8px;
+    display: block;
+  }
+  
+  .scrollbar-hide-desktop::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-hide-desktop::-webkit-scrollbar-thumb {
+    background: rgba(126, 34, 206, 0.5);
+    border-radius: 4px;
+  }
+  
+  .scrollbar-hide-desktop::-webkit-scrollbar-thumb:hover {
+    background: rgba(126, 34, 206, 0.7);
+  }
 }
 

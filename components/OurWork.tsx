@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Link from 'next/link'
-import Script from 'next/script'
 
 export default function OurWork() {
   const ref = useRef(null)
@@ -40,131 +39,144 @@ export default function OurWork() {
 
 // Reels/Video Showcase Component
 function ReelsShowcase({ isInView }: { isInView: boolean }) {
-  const reels = [
+  // Update these paths with your actual video file paths in the public directory
+  // Note: Files in public/ are served from root, so use /videos/filename.mp4
+  const videos = [
     { 
       id: 1, 
-      url: 'https://www.instagram.com/reel/DQRaSYjiPRV/',
-      embedId: 'DQRaSYjiPRV'
+      src: '/videos/dog.mp4'
     },
     { 
       id: 2, 
-      url: 'https://www.instagram.com/reel/DRXYZ4BCJZf/',
-      embedId: 'DRXYZ4BCJZf'
+      src: '/videos/reel2.mp4' // Update with your video path
     },
     { 
       id: 3, 
-      url: 'https://www.instagram.com/reel/DQH-W0eCMny/',
-      embedId: 'DQH-W0eCMny'
+      src: '/videos/reel3.mp4' // Update with your video path
     },
     { 
       id: 4, 
-      url: 'https://www.instagram.com/p/DP9MdacCVEd/',
-      embedId: 'DP9MdacCVEd'
+      src: '/videos/reel4.mp4' // Update with your video path
     },
     { 
       id: 5, 
-      url: 'https://www.instagram.com/p/DQHYdT7iMOa/',
-      embedId: 'DQHYdT7iMOa'
+      src: '/videos/reel5.mp4' // Update with your video path
     },
   ]
 
-  useEffect(() => {
-    // Load Instagram embed script
-    if (typeof window !== 'undefined' && (window as any).instgrm) {
-      (window as any).instgrm.Embeds.process()
-    }
-  }, [])
-
   return (
-    <>
-      {/* Instagram Embed Script */}
-      <Script
-        src="https://www.instagram.com/embed.js"
-        strategy="lazyOnload"
-        onLoad={() => {
-          if ((window as any).instgrm) {
-            (window as any).instgrm.Embeds.process()
-          }
-        }}
-      />
-      <motion.div
-        className="mb-32"
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, delay: 0.2 }}
+    <motion.div
+      className="mb-32"
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+    >
+      <motion.h3 
+        className="text-3xl md:text-4xl font-bold mb-8"
+        initial={{ opacity: 0, x: -20 }}
+        animate={isInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        <h3 className="text-3xl md:text-4xl font-bold mb-8">Reels</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reels.map((reel, index) => (
-            <ReelCard key={reel.id} reel={reel} index={index} />
+        Reels
+      </motion.h3>
+      <div className="overflow-x-auto overflow-y-hidden scrollbar-hide-desktop -mx-4 px-4 md:-mx-8 md:px-8 lg:-mx-16 lg:px-16">
+        <div className="flex gap-4 md:gap-6 w-max">
+          {videos.map((video, index) => (
+            <VideoCard key={video.id} video={video} index={index} isInView={isInView} />
           ))}
         </div>
-      </motion.div>
-    </>
+      </div>
+    </motion.div>
   )
 }
 
-function ReelCard({ reel, index }: { reel: { id: number; url: string; embedId: string }; index: number }) {
+function VideoCard({ video, index, isInView }: { video: { id: number; src: string }; index: number; isInView: boolean }) {
   const [isHovered, setIsHovered] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
+  // Ensure video starts muted (required for autoplay)
   useEffect(() => {
-    // Process Instagram embed when component mounts or when script loads
-    const processEmbed = () => {
-      if (cardRef.current && (window as any).instgrm) {
-        (window as any).instgrm.Embeds.process(cardRef.current)
-      }
-    }
-
-    // Check if script already loaded
-    if ((window as any).instgrm) {
-      processEmbed()
-    } else {
-      // Wait for script to load
-      const checkInterval = setInterval(() => {
-        if ((window as any).instgrm) {
-          processEmbed()
-          clearInterval(checkInterval)
-        }
-      }, 100)
-
-      return () => clearInterval(checkInterval)
+    if (videoRef.current) {
+      videoRef.current.muted = true
     }
   }, [])
 
   return (
     <motion.div
-      ref={cardRef}
-      className="relative aspect-[9/16] rounded-lg overflow-hidden cursor-pointer group bg-secondary"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ scale: 1.05 }}
+      className="relative aspect-[9/16] rounded-xl overflow-hidden cursor-pointer group bg-gradient-to-br from-neutral-900 to-neutral-800 shadow-lg w-[280px] sm:w-[320px] md:w-[360px] flex-shrink-0"
+      initial={{ opacity: 0, scale: 0.9, y: 30 }}
+      animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+      transition={{ 
+        duration: 0.6, 
+        delay: index * 0.1,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+      onHoverStart={() => {
+        setIsHovered(true)
+        if (videoRef.current) {
+          videoRef.current.muted = false
+          videoRef.current.play().catch((error) => {
+            console.error('Error playing video:', error)
+          })
+        }
+      }}
+      onHoverEnd={() => {
+        setIsHovered(false)
+        if (videoRef.current) {
+          videoRef.current.muted = true
+          videoRef.current.pause()
+        }
+      }}
+      whileHover={{ 
+        scale: 1.03,
+        y: -8,
+        transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }
+      }}
+      whileTap={{ scale: 0.98 }}
     >
-      {/* Instagram Embed */}
-      <blockquote
-        className="instagram-media"
-        data-instgrm-permalink={reel.url}
-        data-instgrm-version="14"
-        style={{
-          background: 'transparent',
-          border: '0',
-          borderRadius: '8px',
-          margin: '0',
-          padding: '0',
-          width: '100%',
-          height: '100%',
+      <video
+        ref={videoRef}
+        src={video.src}
+        className="w-full h-full object-cover"
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onError={(e) => {
+          console.error('Video failed to load:', video.src, e)
+        }}
+        onLoadedData={() => {
+          console.log('Video loaded successfully:', video.src)
+        }}
+        onMouseEnter={() => {
+          if (videoRef.current) {
+            videoRef.current.muted = false
+          }
+        }}
+        onMouseLeave={() => {
+          if (videoRef.current) {
+            videoRef.current.muted = true
+          }
         }}
       />
-
-      {/* Hover Overlay */}
+      
+      {/* Hover Overlay with smooth animation */}
       <motion.div
-        className="absolute inset-0 bg-black/10 flex items-center justify-center pointer-events-none z-10"
+        className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent flex items-center justify-center pointer-events-none z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+      />
+      
+      {/* Glow effect on hover */}
+      <motion.div
+        className="absolute inset-0 rounded-xl pointer-events-none z-0"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: isHovered ? 0.3 : 0,
+          boxShadow: isHovered ? '0 0 30px rgba(126, 34, 206, 0.5)' : '0 0 0px rgba(126, 34, 206, 0)'
+        }}
+        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
       />
     </motion.div>
   )
